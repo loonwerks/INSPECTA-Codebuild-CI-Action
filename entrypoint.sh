@@ -12,18 +12,21 @@ if [[ -n $1 ]]; then
 	sourcePath=$1
 fi
 
-environmentVariables=""
 if [[ -n $2 ]]; then
-	environmentVariables=$(echo $2 | jq -r '[to_entries[] | .key + "=" + (.value | tostring)] | join(" ")')
+	for kv in $(echo $2 | jq -r 'to_entries | .[] | .key + "=" + (.value | @sh)'); do
+		echo "setting ${kv}"
+		export $kv;
+	done
 fi
 
-runCommand=(${environmentVariables} RUST_MAKE_TARGET=build-release make -C $GITHUB_WORKSPACE/${sourcePath})
+runCommand=(make -C $GITHUB_WORKSPACE/${sourcePath})
 
 outputFile="codegen.out"
 if [[ -n $3 ]]; then
 	outputFile=$3
 fi
 
+export RUST_MAKE_TARGET=build-release
 echo "run command: ${runCommand[@]}" 
 
 "${runCommand[@]}" >> "$outputFile"
