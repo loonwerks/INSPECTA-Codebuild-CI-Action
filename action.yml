@@ -1,0 +1,24 @@
+# action.yml
+name: 'INSPECTA-Codebuild-CI-Action'
+description: 'INSPECTA CI action to generate code from a SySML (v2) model'
+inputs:
+  sourcepath:
+    description: 'Path to top level Makefile (expects path string).'
+    required: false
+    default: 'system/hamr/microkit'
+  environment-variable:
+    description: 'JSON-formatted dictionary of environment variables to pass to the make system.'
+    required: '{}'
+outputs:
+  timestamp:
+    description: 'The date/time that the code generation was completed'
+  status:
+    description: 'Summary of code generation status'
+  status-messages: 
+    description: 'Description of code generation status'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.sourcepath }}
+    - ${{ inputs.environment-variables }}
