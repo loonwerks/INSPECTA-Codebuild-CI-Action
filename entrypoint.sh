@@ -21,7 +21,7 @@ fi
 
 runCommand=(make -C $GITHUB_WORKSPACE/${sourcePath})
 
-outputFile="codegen.out"
+outputFile="codebuild.out"
 if [[ -n $3 ]]; then
 	outputFile=$3
 fi
