@@ -29,12 +29,12 @@ fi
 export RUST_MAKE_TARGET=build-release
 echo "run command: ${runCommand[@]}" 
 
-"${runCommand[@]}" >> "$outputFile"
+"${runCommand[@]}" >> "$outputFile" 2>&1
 EXIT_CODE=$?
+cat $outputFile
 
 echo "timestamp=$(date)" >> $GITHUB_OUTPUT
 echo "status=${EXIT_CODE}" >> $GITHUB_OUTPUT
-echo "status-messages=$(cat ${outputFile} | jq -R -s '.')" >> $GITHUB_OUTPUT
 
 echo "exit code: $EXIT_CODE"
 if [ "XX $EXIT_CODE" = "XX 0" ]; then

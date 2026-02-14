@@ -14,8 +14,6 @@ outputs:
     description: 'The date/time that the code generation was completed'
   status:
     description: 'Summary of code generation status'
-  status-messages: 
-    description: 'Description of code generation status'
 runs:
   using: 'docker'
   image: 'Dockerfile'
