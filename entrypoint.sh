@@ -2,6 +2,7 @@
 
 echo "sourcepath: $1"
 echo "environment-variables: $2"
+echo "report-filename: $3"
 
 rustup toolchain list
 rustup target list | grep \(installed\)
@@ -21,19 +22,36 @@ fi
 
 runCommand=(make -C $GITHUB_WORKSPACE/${sourcePath})
 
-outputFile="codebuild.out"
+reportFilename=$(mktemp)
 if [[ -n $3 ]]; then
-	outputFile=$3
+	reportFilename=$3
 fi
+
+startTimestamp=$(date)
 
 export RUST_MAKE_TARGET=build-release
 echo "run command: ${runCommand[@]}" 
 
+outputFile=$(mktemp)
 "${runCommand[@]}" >> "$outputFile" 2>&1
 EXIT_CODE=$?
 cat $outputFile
 
-echo "timestamp=$(date)" >> $GITHUB_OUTPUT
+clocReport=$(mktemp)
+cloc --exclude-lang=YAML --json --report-file=${clocReport}
+
+codebuildMessages=$(mktemp)
+cat ${outputFile} | jq --raw-input . | jq --slurp '{"messages" : .}' > ${codebuildMessages}
+
+clocReportSub=$(mktemp)
+jq '{"cloc" : .}' ${clocReport} > ${clocReportSub}
+
+jq -s 'add' ${codebuildMessages} ${clocReportSub} \
+    | jq --arg timestamp "${startTimestamp}" --arg exitcode ${EXIT_CODE} '. += $ARGS.named' \
+    > ${reportFilename}
+chmod +r ${reportFilename}
+
+echo "timestamp=${startTimestamp}" >> $GITHUB_OUTPUT
 echo "status=${EXIT_CODE}" >> $GITHUB_OUTPUT
 
 echo "exit code: $EXIT_CODE"

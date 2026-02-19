@@ -12,6 +12,10 @@ Path to top level Makefile (expects path string).
 
 JSON-formatted dictionary of environment variables to pass to the make system.
 
+### `report-filename`
+
+The name of the file into which to write the JSON-formatted code generation analysis report.  Default: 'codegen-report.json'.
+
 ## Outputs
 
 ## `result`
