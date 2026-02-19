@@ -38,7 +38,7 @@ EXIT_CODE=$?
 cat $outputFile
 
 clocReport=$(mktemp)
-cloc --exclude-lang=YAML --json --report-file=${clocReport}
+cloc --exclude-lang=YAML --json --report-file=${clocReport} ${GITHUB_WORKSPACE}
 
 codebuildMessages=$(mktemp)
 cat ${outputFile} | jq --raw-input . | jq --slurp '{"messages" : .}' > ${codebuildMessages}
