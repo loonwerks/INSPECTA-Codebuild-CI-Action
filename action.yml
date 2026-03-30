@@ -8,10 +8,11 @@ inputs:
     default: 'system/hamr/microkit'
   environment-variable:
     description: 'JSON-formatted dictionary of environment variables to pass to the make system.'
-    required: '{}'
+    required: false
+    default: '{}'
   report-filename:
     description: 'The name of the file into which to write the JSON-formatted code generation analysis report.'
-    required: 'false'
+    required: false
     default: 'codebuild-report.json'
 outputs:
   timestamp:
